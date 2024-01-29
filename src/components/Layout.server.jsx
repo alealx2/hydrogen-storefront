@@ -66,10 +66,11 @@ query CollectionsInfo{
     name
     description
   },      
-  collections(first: 3) {
+  collections(first: 4) {
     nodes {
       id
       title
+      description
       handle
       image{
         url
