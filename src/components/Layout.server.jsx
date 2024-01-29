@@ -59,6 +59,7 @@ export default function Layout({ children }) {
   );
 }
 
+
 //Fetch store info
 const SHOP_QUERY = gql`
 query CollectionsInfo{
@@ -71,6 +72,7 @@ query CollectionsInfo{
       id
       title
       handle
+      description
       image{
         url
         altText
