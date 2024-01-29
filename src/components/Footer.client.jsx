@@ -1,12 +1,12 @@
 import { Link } from "@shopify/hydrogen";
 
-import NavBar from "./NavBar.client";
+import FooterNavBar from "./FooterNavBar.client";
 
 export default function Footer({collections}){
     return(
         <div className="footer-links">
             {collections.map((collection) =>(
-                <NavBar collections={collections}/>
+                <FooterNavBar collections={collections}/>
             ))}              
         </div>
     )

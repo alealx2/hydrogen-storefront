@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import CartBubble from "./CartBubble.client";
 import NavBar from "./NavBar.client";
+import FooterNavBar from "./FooterNavBar.client";
 
 export default function Layout({ children }) {
 
@@ -51,13 +52,14 @@ export default function Layout({ children }) {
               {shop.name}
             </Link>         
             <div className="footer-menu">
-              <NavBar collections={collections}/>              
+              <FooterNavBar collections={collections} />              
             </div>
           </div>           
         </footer>
     </>
   );
 }
+
 
 //Fetch store info
 const SHOP_QUERY = gql`
@@ -72,6 +74,7 @@ query CollectionsInfo{
       title
       description
       handle
+      description
       image{
         url
         altText
