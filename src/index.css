@@ -56,9 +56,13 @@
     .cart-footer {
       @apply flex justify-end pt-20;
     }
-  
+    
+    .empty-cart{
+      @apply text-center py-12
+    }
+
     .header-cart-link {
-      @apply flex items-center justify-end no-underline;
+      @apply flex items-center justify-end no-underline cursor-pointer;
     }
 
     .header-cart-link svg {
