@@ -20,7 +20,7 @@ import CartBubble from "./CartBubble.client";
 export default function CartDrawer({data}) {
 
     const { lines, checkoutUrl, status } = useCart();    
-    const [open = false, setOpen] = useState(true)
+    const [open = false, setOpen] = useState(false)
 
     if(lines.length === 0) {
         // if(status == 'idle') {
@@ -151,12 +151,15 @@ function CartDrawerItem(){
     const { lineId, merchandise, cost, line } = useCartLine();
     const { image, product, selectedOptions } = merchandise
 
+    const imgAlttext = image.altText != null ? image.altText : product.title;
+
     return(
             <li key={lineId} line={line} className="flex py-6">
                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                 
                 <Image  
                     className="h-full w-full object-cover object-center" 
+                    alt={imgAlttext}
                     data={image} 
                 />
 

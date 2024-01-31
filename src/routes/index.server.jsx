@@ -2,7 +2,7 @@ import { Link, Image, useShopQuery, CacheLong, gql } from '@shopify/hydrogen';
 import { Suspense } from 'react';
 
 import Layout from '../components/Layout.server';
-import ProductCard from '../components/ProductGridItem.server';
+import ProductCard from '../components/ProductGridItem.client';
 import CollectionCard from '../components/CollectionGridItem.client';
 import SwiperBanner from '../components/SwiperBanner.client';
 

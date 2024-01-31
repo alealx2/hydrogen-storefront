@@ -22,7 +22,7 @@ export default function SwiperBanner({data}){
 
                 <swiper-slide key={element.id}>
                     <Link to={`/collections/${element.handle}`}>
-                        <Image className='swiper-img' id={element.image.id} alt={element.image.altText} data={element.image}/>
+                        <Image className='swiper-img' id={element.image.id} alt={`slide-${element.title}`} data={element.image}/>
                     </Link>
                 </swiper-slide>                
 

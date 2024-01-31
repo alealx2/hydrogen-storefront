@@ -6,10 +6,16 @@ export default function ProductCard({ product }) {
 
     const isDiscounted = compareAtPrice?.amount > price?.amount;
 
+    const imgAlttext = product.featuredImage.altText != null ? product.featuredImage.altText : product.title;
+
     return (
         <div className="product-grid-item">
             <Link to={`/products/${product.handle}`} className="image-container">
-                <Image alt={product.featuredImage.altText} data={product.featuredImage} />
+                <Image 
+                    key={product.featuredImage.id} 
+                    alt={imgAlttext} 
+                    data={product.featuredImage} 
+                />
             </Link>
             <div className="product-grid-item-title">{product.title}</div>
             <div className="product-grid-prices">
