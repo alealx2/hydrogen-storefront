@@ -47,6 +47,7 @@ query CollectionDetails($handle: String!) {
           id
           title
           handle
+          publishedAt          
           featuredImage {
             url
             altText
@@ -55,11 +56,11 @@ query CollectionDetails($handle: String!) {
           }
           variants(first: 1) {
             nodes {
-              priceV2 {
+              price {
                 amount
                 currencyCode
               }
-              compareAtPriceV2 {
+              compareAtPrice {
                 amount
                 currencyCode
               }

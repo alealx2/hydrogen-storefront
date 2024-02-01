@@ -1,5 +1,5 @@
 
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
@@ -7,12 +7,15 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from
 import ProductCard from './ProductGridItem.client'
 
 const sortOptions = [
-  { name: 'Most Popular', href: '#', current: true },
-  { name: 'Best Rating', href: '#', current: false },
+  // { name: 'Most Popular', href: '#', current: true },
+  // { name: 'Best Rating', href: '#', current: false },
+  { name: 'Default', href: '#', current: true },
   { name: 'Newest', href: '#', current: false },
+  { name: 'Oldest', href: '#', current: false },
   { name: 'Price: Low to High', href: '#', current: false },
   { name: 'Price: High to Low', href: '#', current: false },
 ]
+
 const subCategories = [
   { name: 'Totes', href: '#' },
   { name: 'Backpacks', href: '#' },
@@ -27,19 +30,21 @@ function classNames(...classes) {
 
 export default function SideBarFilter({data}) {
 
-  //We set a state hook for our mobile filters
+  //HANDEL FILTERS
+  //We set a state hook for our mobile filter floating menu
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
-  //We set a state hook for our collection filters selection states  
-  const [selectedFilters, setSelectedFilters ] = useState([])
-  
-  //Constucts filters data array
+  //We set a hook for our custom filtering and sorting functionalities
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+  const [filteredAndSortedProducts, setFilteredAndSortedProducts] = useState([...data]);
+
+  //Constructs filtering logic
   const customFilters = [];
   const filters = data.map((filter) => {
     const options = filter.options.map((option) => {
       const existingFilter = customFilters.find((filter) => filter.name === option.name);
 
-      // Option does not exist in customFilters, so we add it
       if (!existingFilter) {
         const newFilter = {
           id: option.name,
@@ -50,17 +55,13 @@ export default function SideBarFilter({data}) {
             checked: false,
           })),
         };
-  
+
         customFilters.push(newFilter);
-
       } else {
-
-        // Option already exists, so we add unique values
         option.values.forEach((value) => {
           const existingOption = existingFilter.options.find((filterOption) => filterOption.value === value);
-  
+
           if (!existingOption) {
-            // Value does not exist in existing options, so we add it
             existingFilter.options.push({
               value: value,
               label: value,
@@ -69,47 +70,71 @@ export default function SideBarFilter({data}) {
           }
         });
       }
-    });  
-  });  
+    });
+  });
 
-  //Handle user's filter selection and display data based on that 
+  //handles filtering
   const handleFilterChange = (filterName, value) => {
     setSelectedFilters((prevFilters) => {
       const existingFilter = prevFilters.find((filter) => filter.name === filterName);
-  
+
       if (existingFilter) {
-        // Filter exists, update values
         const updatedFilters = prevFilters.map((filter) => {
           if (filter.name === filterName) {
-            // Toggle the value
             const updatedValues = filter.values.includes(value)
               ? filter.values.filter((v) => v !== value)
               : [...filter.values, value];
-  
-            // If no values are selected for the filter, remove the filter
+
             return { name: filterName, values: updatedValues.length > 0 ? updatedValues : [] };
           } else {
             return filter;
           }
         });
-  
+
         return updatedFilters.filter((filter) => filter.values.length > 0);
       } else {
-        // Filter does not exist, add it
         return [...prevFilters, { name: filterName, values: [value] }];
       }
     });
   };
-  
-  // Check if no filters are selected or if the product matches any selected filter,
-  // Then return results based on that  
-  const filteredProducts = data.filter((product) => {
-    return selectedFilters.length == 0 || selectedFilters.some((filter) => {
-      const productOptions = Array.isArray(product.options) ? product.options : [];
-      const productOption = productOptions.find((option) => option.name === filter.name);
-      return productOption && filter.values.some((value) => productOption.values.includes(value));
+
+  //handles sorting
+  const updateFilteredAndSortedProducts = () => {
+    let filteredData = [...data];
+
+    filteredData = filteredData.filter((product) => {
+      return selectedFilters.length === 0 || selectedFilters.some((filter) => {
+        const productOptions = Array.isArray(product.options) ? product.options : [];
+        const productOption = productOptions.find((option) => option.name === filter.name);
+        return productOption && filter.values.some((value) => productOption.values.includes(value));
+      });
     });
-  });
+
+    switch (selectedSort.name) {
+      case 'Newest':
+        filteredData = filteredData.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+        break;
+      case 'Oldest':
+        filteredData = filteredData.sort((a, b) => new Date(a.publishedAt) - new Date(b.publishedAt));
+        break;        
+      case 'Price: Low to High':
+        filteredData = filteredData.sort((a, b) => a.variants.nodes[0].price.amount - b.variants.nodes[0].price.amount);
+        break;
+      case 'Price: High to Low':
+        filteredData = filteredData.sort((a, b) => b.variants.nodes[0].price.amount - a.variants.nodes[0].price.amount);
+        break;
+      default:
+        // Default sorting logic
+        break;
+    }
+
+    setFilteredAndSortedProducts(filteredData);
+  };
+
+  useEffect(() => {
+    updateFilteredAndSortedProducts();
+  }, [selectedFilters, selectedSort, data]);
+
 
   return (
     <div className="bg-white">
@@ -219,7 +244,7 @@ export default function SideBarFilter({data}) {
           </Dialog>
         </Transition.Root>
 
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between border-b border-gray-200 pb-6">
             {/* <h1 className="text-4xl font-bold tracking-tight text-gray-900">New Arrivals</h1> */}
 
@@ -251,10 +276,11 @@ export default function SideBarFilter({data}) {
                           {({ active }) => (
                             <a
                               href={option.href}
+                              onClick={() => setSelectedSort(option)}
                               className={classNames(
-                                option.current ? 'font-medium text-gray-900' : 'text-gray-500',
+                                option === selectedSort ? 'font-medium text-gray-900' : 'text-gray-500',
                                 active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm'
+                                'block px-4 py-2 text-sm cursor-pointer'
                               )}
                             >
                               {option.name}
@@ -354,7 +380,7 @@ export default function SideBarFilter({data}) {
               <div className="lg:col-span-3">
 
                 <div className="product-grid">
-                {filteredProducts.map((product) => (
+                {filteredAndSortedProducts.map((product) => (
                         <ProductCard key={product.id} product={product}></ProductCard>
                     ))}
                 </div>                                
