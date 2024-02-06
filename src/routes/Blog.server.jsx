@@ -12,7 +12,7 @@ export default function Blog() {
 
     const { data: { blog: { articles: { nodes: articles } } }} = data;
 
-    console.log(articles);
+    // console.log(articles);
 
     return (
         <Layout>

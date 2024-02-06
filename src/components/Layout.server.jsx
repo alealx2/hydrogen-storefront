@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import NavBar from "./NavBar.client";
 import FooterNavBar from "./FooterNavBar.client";
 import CartDrawer from "./CartDrawer.client";
+import PredictiveSearch from "./PredictiveSearch.client";
 
 export default function Layout({ children }) {
 
@@ -13,8 +14,17 @@ export default function Layout({ children }) {
       preload: true,
   });
 
+  // Fetch predictive search data
+  // const searchData = useShopQuery({
+  //   query: PREDICTIVE_SEARCH_QUERY,   
+  //   variables: {
+  //     searchTerm: "" 
+  //   },
+  // });
+
   const { data: { shop } } = data;
   const { data: {collections: { nodes: collections } } } = data;
+  // const { data: {products: { nodes: searchResults } } } = searchData;
 
   return (
     <>
@@ -33,8 +43,10 @@ export default function Layout({ children }) {
                     {shop.name}
                 </Link>
 
-                <NavBar collections={collections}/>          
-                
+                <NavBar collections={collections}/>                        
+
+                <PredictiveSearch  />
+
                 <CartDrawer />
             </div>
         </header>
@@ -80,3 +92,47 @@ query CollectionsInfo{
   }
 }
 `;
+
+// Fetch predictive search info
+// const PREDICTIVE_SEARCH_QUERY = gql`
+//   query PredictiveSearch($searchTerm: String!) {
+//     products(query: $searchTerm, first: 5) {    
+//       nodes {
+//         id
+//         title
+//         descriptionHtml
+//         media(first: 1) {
+//           nodes {
+//             ... on MediaImage {
+//               id
+//               image {
+//                 url
+//                 width
+//                 height
+//                 altText
+//               }
+//             }
+//           }
+//         }
+//         variants(first: 1) {
+//           nodes {
+//             id
+//             availableForSale
+//             price {
+//               amount
+//               currencyCode
+//             }
+//             compareAtPrice {
+//               amount
+//               currencyCode
+//             }
+//             selectedOptions {
+//               name
+//               value
+//             }
+//           }
+//         }
+//       }  
+//     }
+//   }
+// `;
