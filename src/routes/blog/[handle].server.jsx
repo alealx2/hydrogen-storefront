@@ -57,7 +57,7 @@ export default function Article() {
                     <span>{formattedDate} · {article.authorV2.name}</span>
                 </div>
                 <article>
-                    <Image data={article.image} altText={article.image.altText} />
+                    <Image data={article.image} alt={article.image.altText} />
                     <div 
                         dangerouslySetInnerHTML={{ __html: article.contentHtml }}
                         className="article-body"

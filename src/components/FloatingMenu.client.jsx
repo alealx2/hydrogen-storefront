@@ -31,8 +31,8 @@ export default function FloatingMenu({menu}) {
     });
 
     const callsToAction = [
-        { name: 'Check Github project', href: '#', icon: CodeBracketIcon },
-        { name: 'Contact dev', href: '#', icon: DevicePhoneMobileIcon },
+        { name: 'Check Github project', href: 'https://github.com/alealx2/hydrogen-storefront', target: "_blank", icon: CodeBracketIcon },
+        { name: 'Contact dev', href: 'https://wa.link/zgazxr', target: "_blank", icon: DevicePhoneMobileIcon},
     ]
       
 
@@ -75,6 +75,7 @@ export default function FloatingMenu({menu}) {
                 <a
                   key={item.name}
                   href={item.href}
+                  target={item.target}
                   className="flex items-center justify-center gap-x-2.5 p-3 font-semibold text-gray-900 hover:bg-gray-100"
                 >
                   <item.icon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />

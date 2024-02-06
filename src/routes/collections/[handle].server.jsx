@@ -2,7 +2,7 @@ import { useShopQuery, CacheLong, gql, useRouteParams } from '@shopify/hydrogen'
 import { Suspense } from 'react';
 
 import Layout from '../../components/Layout.server';
-import ProductCard from '../../components/ProductGridItem.server';
+import SideBarFilter from '../../components/SideBarFilters.client';
 
 export default function Collection() {
     const { handle } = useRouteParams();
@@ -25,11 +25,7 @@ export default function Collection() {
             <Suspense>
                 <div className="catalog-page container">
                     <h1>{collection.title}</h1>
-                    <div className="product-grid">
-                        {nodes.map((product) => (
-                            <ProductCard product={product}></ProductCard>
-                        ))}
-                    </div>
+                    <SideBarFilter data={nodes} />
                 </div>
             </Suspense>
         </Layout>
@@ -39,37 +35,43 @@ export default function Collection() {
 const QUERY = gql`
 query CollectionDetails($handle: String!) {
     collection(handle: $handle) {
-        id
-        title
-        description
-        seo {
-            description
-            title
-        }
-        products(first: 9) {
+      id
+      title
+      description
+      seo {
+          description
+          title
+      }
+      products(first: 9) {
+        nodes {
+          id
+          title
+          handle
+          publishedAt          
+          featuredImage {
+            url
+            altText
+            height
+            width
+          }
+          variants(first: 1) {
             nodes {
-              title
-              handle
-              featuredImage {
-                url
-                altText
-                height
-                width
+              price {
+                amount
+                currencyCode
               }
-              variants(first: 1) {
-                nodes {
-                  priceV2 {
-                    amount
-                    currencyCode
-                  }
-                  compareAtPriceV2 {
-                    amount
-                    currencyCode
-                  }
-                }
+              compareAtPrice {
+                amount
+                currencyCode
               }
             }
+          }
+          options {
+          name
+          values
+          }              
         }
+      }
     }
   }
 `;
