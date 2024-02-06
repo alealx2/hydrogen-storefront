@@ -9,10 +9,14 @@ import ProductGallery from './ProductGallery.client';
 
 export default function ProductDetails({ product }) {
 
+    const imgAlttext =product.media.nodes[0].image.altText != null ?product.media.nodes[0].image.altText : product.title;
     return (
         <ProductOptionsProvider data={product}>
             {/* <ProductGallery data={product} /> */}
-            <Image data={product.media.nodes[0].image} className="product-page-image"/>
+            <Image 
+            alt={imgAlttext}             
+            data={product.media.nodes[0].image} 
+            className="product-page-image"/>
             <ProductForm product={product}/>
         </ProductOptionsProvider>
     )

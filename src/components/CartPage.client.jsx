@@ -23,11 +23,18 @@ export default function CartPage() {
 function CartTable() {
     const { lines, checkoutUrl, status } = useCart();
 
-    console.log(status);
+    // console.log(status);
 
     if(lines.length === 0) {
         if(status == 'idle') {
-            return <div>No items are currently in the cart</div>
+            return (
+                <div className='empty-cart'>
+                    <h1> Your cart is empty  </h1>
+                    <p>
+                        Take a look of our best seller products you might find something nice for you.
+                    </p>
+                </div>
+            )
         }
     } else {
         return (
